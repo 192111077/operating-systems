@@ -1,67 +1,68 @@
-#include<bits/stdc++.h>
-using namespace std;
- 
-// Function to allocate memory to blocks as per worst fit
-// algorithm
-void worstFit(int blockSize[], int m, int processSize[],
-                                                 int n)
+#include <stdio.h>
+
+void implimentWorstFit(int blockSize[], int blocks, int processSize[], int processes)
 {
-    // Stores block id of the block allocated to a
-    // process
-    int allocation[n];
+    
+    int allocation[processes];
+    int occupied[blocks];
+    
+    for(int i = 0; i < processes; i++){
+        allocation[i] = -1;
+    }
+    
+    for(int i = 0; i < blocks; i++){
+        occupied[i] = 0;
+    }
  
-    // Initially no block is assigned to any process
-    memset(allocation, -1, sizeof(allocation));
- 
-    // pick each process and find suitable blocks
-    // according to its size ad assign to it
-    for (int i=0; i<n; i++)
+    for (int i=0; i < processes; i++)
     {
-        // Find the best fit block for current process
-        int wstIdx = -1;
-        for (int j=0; j<m; j++)
-        {
-            if (blockSize[j] >= processSize[i])
+	int indexPlaced = -1;
+	for(int j = 0; j < blocks; j++)
+	{
+	   
+	    if(blockSize[j] >= processSize[i] && !occupied[j])
             {
-                if (wstIdx == -1)
-                    wstIdx = j;
-                else if (blockSize[wstIdx] < blockSize[j])
-                    wstIdx = j;
+                
+                if (indexPlaced == -1)
+                    indexPlaced = j;
+                    
+                
+                else if (blockSize[indexPlaced] < blockSize[j])
+                    indexPlaced = j;
             }
         }
  
-        // If we could find a block for current process
-        if (wstIdx != -1)
+       
+        if (indexPlaced != -1)
         {
-            // allocate block j to p[i] process
-            allocation[i] = wstIdx;
+           
+            allocation[i] = indexPlaced;
+            
+            occupied[indexPlaced] = 1;
  
-            // Reduce available memory in this block.
-            blockSize[wstIdx] -= processSize[i];
+            blockSize[indexPlaced] -= processSize[i];
         }
     }
  
-    cout << "\nProcess No.\tProcess Size\tBlock no.\n";
-    for (int i = 0; i < n; i++)
+    printf("\nProcess No.\tProcess Size\tBlock no.\n");
+    for (int i = 0; i < processes; i++)
     {
-        cout << "   " << i+1 << "\t\t" << processSize[i] << "\t\t";
+        printf("%d \t\t\t %d \t\t\t", i+1, processSize[i]);
         if (allocation[i] != -1)
-            cout << allocation[i] + 1;
+            printf("%d\n",allocation[i] + 1);
         else
-            cout << "Not Allocated";
-        cout << endl;
+            printf("Not Allocated\n");
     }
 }
  
-// Driver code
 int main()
 {
-    int blockSize[] = {100, 500, 200, 300, 600};
-    int processSize[] = {212, 417, 112, 426};
-    int m = sizeof(blockSize)/sizeof(blockSize[0]);
-    int n = sizeof(processSize)/sizeof(processSize[0]);
+    int blockSize[] = {100, 50, 30, 120, 35};
+    int processSize[] = {40, 10, 30, 60};
+    int blocks = sizeof(blockSize)/sizeof(blockSize[0]);
+    int processes = sizeof(processSize)/sizeof(processSize[0]);
  
-    worstFit(blockSize, m, processSize, n);
+    implimentWorstFit(blockSize, blocks, processSize, processes);
  
-    return 0 ;
+    return 0;
 }
